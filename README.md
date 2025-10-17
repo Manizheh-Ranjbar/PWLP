@@ -1,2 +1,1 @@
-# PWLP: Scalable Edge-Centric Subgraph Learning via Pool
-Walks for Link Prediction
+# PWLP: Scalable Edge-Centric Subgraph Learning via Pool Walks for Link Prediction
