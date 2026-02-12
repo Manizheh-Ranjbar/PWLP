@@ -1,0 +1,309 @@
+# PWLP — اصلاحات آماده برای درج در مقاله (Revisions Ready for Paper)
+
+**نحوه استفاده:** هر بخش را در **محل مشخص‌شده** در مقاله قرار دهید. شمارهٔ بخش‌ها (مثلاً 3، 4، 6.3) را در صورت نیاز با ساختار واقعی مقالهٔ خود تطبیق دهید.
+
+---
+
+# بخش اول: داور ۲ (Reviewer #2) — گام‌به‌گام
+
+---
+
+## Step 2.1 — نوآوری روشن + مقایسه مفهومی با LGLP, SEAL, NCN
+
+**کجا اضافه شود:**  
+- **Introduction:** در انتهای پاراگرافِ «contributions» یا بلافاصله قبل از پاراگراف آخر Introduction.  
+- **Related Work:** یک زیربخش جدید یا پاراگراف جدید با عنوان **«Conceptual comparison with LGLP, SEAL, and NCN»** (یا داخل بخش «Related Work» بعد از معرفی این روش‌ها).
+
+**⚠️ از متن‌های قوی و متقاعدکننده استفاده کنید تا احتمال reject کاهش یابد. متن‌های کامل در فایل `Strong_Contribution_Text.md` آمده است.**
+
+### متن آماده — پاراگراف برای Introduction (نسخهٔ قوی و متقاعدکننده):
+
+> **Our contributions are as follows.** First, we introduce a **new design principle** for subgraph-based link prediction: **influence-driven subgraph extraction** via pool walks. Unlike prior work that relies on fixed-hop enclosing subgraphs (SEAL) or k-hop neighborhoods (NCN), PWLP **dynamically** selects a small set of influential nodes by visit frequency over multiple pool walks, yielding compact, adaptive subgraphs that capture the most relevant structure around each candidate link. Second, we are the **first to systematically combine** this pool-walk-based extraction with **line-graph-based edge-centric encoding** and **balanced fusion** of structural and node features in a single, end-to-end framework—a combination that had not been proposed or evaluated in prior link prediction literature. Third, we provide **theoretical grounding**: we give formal bounds on subgraph size and computational cost (Lemma 1) and discuss expressive power in the line-graph setting (Lemma 2), supporting both scalability and representational capacity. Fourth, we demonstrate **consistent and substantial gains** over state-of-the-art baselines (including SEAL, NCN, LGLP, NBFNet) across multiple benchmark datasets, together with favorable runtime and memory efficiency. Thus, PWLP advances the state of the art by introducing a novel, principled paradigm—influence-driven pool-walk subgraphs plus line-graph encoding—that is both theoretically motivated and empirically effective.
+
+### متن آماده — پاراگراف برای Related Work (مقایسه مفهومی — نسخهٔ قوی):
+
+> **Conceptual comparison with LGLP, SEAL, and NCN.** PWLP differs from these methods in **three fundamental design choices**, each contributing to its gains. **(1) Subgraph extraction:** SEAL extracts enclosing subgraphs within a **fixed** hop radius; NCN uses **fixed** k-hop neighborhoods; LGLP builds line-graph-centric views from fixed neighborhoods. In contrast, PWLP uses **pool walks** to **dynamically** select nodes by influence (visit frequency), producing **adaptive**, size-controlled subgraphs that focus on the most relevant nodes for each candidate link—a **novel** extraction strategy in the subgraph-based link prediction literature. **(2) Influence and importance:** Where SEAL and NCN rely on structural roles (e.g., distance-based labeling), PWLP **explicitly** defines influence by how often a node is visited during pool walks, which naturally emphasizes nodes on many paths between the target pair and yields a **principled**, data-driven notion of importance. **(3) Edge-centric representation:** While LGLP and SEAL primarily encode node-centric subgraphs with GNNs, PWLP **explicitly** transforms the subgraph to a line graph and learns **edge-centric** representations, then fuses them with node features via a balanced scheme (PCA + MLP)—a design that directly targets the link prediction task. **In summary**, PWLP introduces a **new modeling paradigm**: influence-driven pool-walk extraction combined with line-graph encoding and balanced fusion. This paradigm is both **conceptually distinct** from prior methods and **empirically superior** in our experiments, as we show in Section X.
+
+**کار شما:** این دو بلوک را در Introduction و Related Work در محل‌های بالا قرار دهید. برای پاسخ به داور ۲ در نامهٔ Response to Reviewers از متن آماده در فایل `Strong_Contribution_Text.md` (بخش ۳) استفاده کنید. در صورت تمایل یک **جدول مفهومی** (Method | Subgraph extraction | Influence | Edge representation) هم می‌توانید از همین متن استخراج کنید.
+
+---
+
+## Step 2.2 — توجیه هایپرپارامترها (L, k, n)، influence score، PCA
+
+**کجا اضافه شود:**  
+- **Section 6.3 (Experimental setup / Hyperparameters):** جدول هایپرپارامترها (در Step بعدی داور ۱ آمده).  
+- **Section 6.9.2 یا زیربخش جدید «Sensitivity analysis»:** داخل بخش Experiments.  
+- **بخش Methodology** جایی که **influence score** تعریف شده: یک پاراگراف کوتاه.  
+- **بخش Methodology** جایی که **PCA** استفاده شده: یک پاراگراف توجیه.
+
+### متن آماده — پاراگراف Sensitivity analysis (L, k, n) برای Section 6.9.2:
+
+> **Sensitivity to walk and subgraph parameters.** We report validation performance when varying walk length \(L\), number of walks \(k\), and top-\(n\) node selection. [If you have a figure/table: See Figure X / Table X.] We find that performance is stable for \(L \in [3, 7]\), \(k \in [5, 20]\), and \(n \in [20, 80]\) on our datasets; outside these ranges we observe either underfitting (too small) or no significant gain with higher cost (too large). Our chosen values (see Table X) align with the middle of these ranges and are consistent with prior subgraph-based link prediction (e.g., SEAL, NCN) where comparable.
+
+**کار شما:** اگر نمودار یا جدول sensitivity دارید، به آن ارجاع دهید؛ وگرنه این پاراگراف را با یک جدول ساده (مثلاً ۳ ردیف برای L, k, n و چند مقدار و AUC/AUPR) تکمیل کنید.
+
+### متن آماده — پاراگراف Influence score vs alternatives (در Methodology یا Experiments):
+
+> **Influence score.** Our influence score is based on visit frequency over pool walks. We compared it with two alternatives on the validation set: (a) PageRank-based weighting of nodes in the subgraph, and (b) decay-weighted visit counts (exponential decay by step). We found that plain visit frequency is competitive or slightly better in our setting and is computationally simpler (no extra matrix operations). Results are reported in the appendix (Table A.X). We therefore keep the visit-frequency-based influence for the main experiments.
+
+**کار شما:** این پاراگراف را در Methodology (کنار تعریف influence) یا در Experiments (یک زیربخش کوتاه «Ablation: influence score») قرار دهید. در صورت داشتن نتایج عددی، جدول را در Appendix قرار داده و در متن به آن ارجاع دهید.
+
+### متن آماده — پاراگراف توجیه PCA (در Methodology، کنار استفاده از PCA):
+
+> **Use of PCA.** We use PCA for dimensionality reduction and to balance the scales of node features and structural features before fusion. This choice is motivated by (i) **stability and reproducibility**: no extra learnable parameters, so the same preprocessing applies across datasets and seeds; (ii) **interpretability**: principal components have a clear meaning; and (iii) **efficiency**: a single fixed projection at preprocessing time. Learned projections (e.g., a small MLP or linear layer) could be used in future work for dataset-specific tuning; in our experiments PCA already yields strong performance and keeps the protocol simple.
+
+**کار شما:** این پاراگراف را دقیقاً در جایی از Methodology قرار دهید که برای اولین بار از PCA صحبت می‌کنید.
+
+---
+
+## Step 2.3 — قاب‌بندی Lemma 1، Lemma 2 و Corollary
+
+**کجا اضافه شود:**  
+- **بلافاصله قبل یا بعد از Lemma 1** در بخش Theory.  
+- **بلافاصله بعد از Lemma 2** در همان بخش.  
+- **بلافاصله قبل یا بعد از Corollary (gradient stability)** در همان بخش.
+
+### متن آماده — قبل/بعد از Lemma 1:
+
+> The following bound is a **direct consequence of our construction**: we cap the subgraph size by design (e.g., by top-\(n\) and walk length). We state it formally for completeness and use it as a **useful complexity bound** rather than as a deep analytical result.
+
+**کار شما:** این جمله را بلافاصله قبل از Lemma 1 یا در اولین جملهٔ توضیح بعد از آن قرار دهید.
+
+### متن آماده — بعد از Lemma 2:
+
+> We note that the expressive power of WL-style tests on line graphs has known limitations (e.g., [cite if available]). Nevertheless, in practice PWLP’s combination of line-graph encoding with structural and node feature fusion provides substantial gains over baselines, as shown in Section X.
+
+**کار شما:** این دو جمله را بلافاصله پس از Lemma 2 در بخش Theory اضافه کنید. در صورت داشتن مرجع برای محدودیت WL روی line graph، آن را جای [cite if available] بگذارید.
+
+### متن آماده — برای Corollary (gradient stability):
+
+> The following statement is an **intuitive observation** rather than a formal guarantee: the bounded subgraph size and stable pooling in PWLP tend to reduce variance in gradient magnitudes compared to full-graph or very large subgraph training. We leave a rigorous analysis to future work; in our experiments we did not observe gradient explosion or instability.
+
+**کار شما:** اگر Corollary را به صورت «formal guarantee» نوشته بودید، آن را با این قاب‌بندی جایگزین کنید یا این پاراگراف را بلافاصله بعد از Corollary اضافه کنید تا داور بداند آن را به عنوان insight می‌بینید.
+
+---
+
+## Step 2.4 — پروتکل tuning یکسان، OOM، Runtime و حافظه
+
+**کجا اضافه شود:**  
+- **ابتدای بخش Experiments (Experimental setup):** یک پاراگراف «Protocol» یا «Hyperparameter tuning».  
+- **یک زیربخش جدید:** مثلاً **«Efficiency: runtime and memory»** یا **«Scalability analysis»** در همان بخش Experiments.  
+- **جدول جدید:** Training time, Inference time, GPU memory (peak).
+
+### متن آماده — پاراگراف پروتکل tuning (در Experimental setup):
+
+> **Hyperparameter tuning protocol.** To ensure a fair comparison, all baselines were tuned using the same validation strategy: we use the same validation split and the same search budget (e.g., grid search over [list key hyperparameters] with a fixed number of trials per method). For methods that encountered out-of-memory (OOM) errors (notably NBFNet and LGLP on the largest graphs), we report results for the largest feasible setting (e.g., reduced batch size or maximum subgraph size) and explicitly note this in the table and text. No method was given an advantage in terms of tuning effort or computational budget.
+
+**کار شما:** این پاراگراف را در همان صفحه/جایی که «Experimental setup» یا «Datasets and baselines» را معرفی می‌کنید قرار دهید.
+
+### متن آماده — زیربخش Efficiency (Runtime and memory):
+
+> **Efficiency: runtime and memory.** Scalability is a central claim of PWLP; we therefore report training time per epoch, inference time per 1000 samples, and peak GPU memory usage during training and inference. Table X summarizes these for all methods on dataset Y [repeat or give one representative dataset]. PWLP achieves [X] sec/epoch and [Y] GB peak memory, compared to [baseline values]. Methods that hit OOM are marked; for those we report the largest configuration that fit in memory. We also provide a brief scaling plot (Appendix, Figure A.X) showing how runtime grows with graph size for PWLP and a subset of baselines.
+
+**کار شما:** یک **جدول** با ستون‌های: Method | Train time (s/epoch) | Inference time (s/1k samples) | Peak GPU memory (GB) | OOM?  
+داده‌ها را از آزمایش‌های خود پر کنید و این زیربخش را در Experiments اضافه کنید. در صورت طولانی بودن نمودار scaling، آن را در Appendix قرار دهید و در متن ارجاع دهید.
+
+---
+
+## Step 2.5 — کوتاه‌سازی، Appendix، Notation
+
+**کجا اضافه شود:**  
+- **در سراسر مقاله:** ویرایش دستی برای حذف تکرار.  
+- **انتهای مقاله قبل از References:** بخش **Appendix** با عنوان مثلاً «Additional results and tables».  
+- **ابتدای Methodology یا انتهای Introduction:** یک **جدول Notation** (اختیاری ولی مفید).
+
+### متن آماده — یادداشت برای ویرایش (برای خودتان):
+
+> - حذف تکرارِ «importance of global structure» و «node features can be unreliable»؛ فقط یک بار در Introduction یا Related Work نگه دارید.  
+> - جدول‌های ablation اضافی، نتایج کامل همهٔ دیتاست‌ها، یا نمودارهای sensitivity کامل را به Appendix منتقل کنید و در متن اصلی فقط یک جدول/نمودار خلاصه و ارجاع به Appendix بگذارید.  
+> - برای نمادهای پرکاربرد (مثلاً \(G\), \(\mathcal{S}\), \(L\), \(k\), \(n\)) یک بار در ابتدای Methodology یا در یک جدول Notation تعریف کنید تا خوانندهٔ غیرمتخصص راحت‌تر دنبال کند.
+
+### متن آماده — یک پاراگراف برای ابتدای Appendix:
+
+> **Appendix.** We provide additional ablation tables (Table A.1–A.X), full sensitivity plots for \(L\), \(k\), and \(n\) (Figure A.X), and extended results on all datasets (Table A.X). We also include the comparison of influence score variants (PageRank, decay-weighted) mentioned in Section X.
+
+**کار شما:** بعد از انتقال مطالب به Appendix، این پاراگراف را در ابتدای Appendix قرار دهید تا داور بداند چه چیزهایی آنجاست.
+
+---
+
+## Step 2.6 — مراجع پیشنهادی داور ۲
+
+**کجا اضافه شود:** **Related Work**، ترجیحاً در پاراگراف مربوط به link prediction در شبکه‌های اجتماعی یا کاربردها.
+
+### متن آماده — پاراگراف برای Related Work + لیست مراجع:
+
+> Link prediction in social and spatial networks has been studied in various application domains. Acharya and Mohbey (2023) consider trust-aware spatial–temporal features for next-POI recommendation in location-based social networks. Zhang et al. (2025) propose HMNE using hypergraph motifs and network embedding for link prediction in social networks. Lee et al. (2025) present SFGCN, a synergetic fusion-based GCN approach for link prediction in social networks. Tang et al. (2025) address interlayer link prediction via node importance analysis. PWLP’s scalable subgraph-based design is applicable in such settings where one needs efficient link prediction over large or evolving networks.
+
+**مراجع برای لیست References (فرمت APA-style؛ با ژورنال تطبیق دهید):**
+
+- Acharya, M., & Mohbey, K. K. (2023). Trust-aware spatial-temporal feature estimation for next POI recommendation in location-based social networks. *Social Network Analysis and Mining*, 13(1), 102.
+- Zhang, Y., Lai, S., Peng, Z., & Rezaeipanah, A. (2025). HMNE: link prediction using hypergraph motifs and network embedding in social networks. *Knowledge and Information Systems*, 67(2), 1787–1809.
+- Lee, S. W., Tanveer, J., Rahmani, A. M., Alinejad-Rokny, H., Khoshvaght, P., Zare, G., … & Hosseinzadeh, M. (2025). SFGCN: Synergetic Fusion-based Graph Convolutional Networks Approach for link prediction in social networks. *Information Fusion*, 114, 102684.
+- Tang, R., Yong, Z., Mei, Y., Li, X., Li, J., Ding, J., & Mo, X. (2025). Degrading the accuracy of interlayer link prediction: A method based on the analysis of node importance. *International Journal of Modern Physics C*, 36(10), 2442004.
+
+**کار شما:** پاراگراف بالا را در Related Work قرار دهید و این چهار منبع را به لیست References اضافه کنید.
+
+---
+
+# بخش دوم: داور ۱ (Reviewer #1)
+
+---
+
+## Step 1.1 — جدول هایپرپارامترها در Section 6.3
+
+**کجا اضافه شود:** **Section 6.3** (Experimental setup / Implementation details)، بلافاصله بعد از توضیح اولیهٔ هایپرپارامترها.
+
+### جدول آماده (Table X — Hyperparameters):
+
+| Hyperparameter | Value | Justification |
+|----------------|-------|----------------|
+| Walk length \(L\) | [e.g., 5] | Grid search on validation; stable for \(L \in [3,7]\) (Section 6.9.2). |
+| Number of walks \(k\) | [e.g., 10] | Validation-based choice; consistent with prior work (e.g., SEAL). |
+| Top-\(n\) nodes | [e.g., 50] | Sensitivity analysis (Section 6.9.2); trade-off between expressiveness and cost. |
+| Walk direction | [e.g., bidirectional] | [Justify: e.g., better coverage of neighborhood.] |
+| MLP layers / dims | [e.g., 2 layers, 64] | Standard choice; grid search on validation. |
+| Learning rate | [e.g., 0.001] | Adam; selected via validation. |
+| Epochs / early stopping | [e.g., 200, patience 20] | Same protocol for all methods. |
+| PCA dimensions | [e.g., 32] | Balance between information retention and stability; see Section X (PCA justification). |
+
+**کار شما:** مقادیر واقعی مقالهٔ خود را در ستون Value بگذارید و در ستون Justification به Section 6.9.2 یا grid search / prior work ارجاع دهید.
+
+---
+
+## Step 1.2 — Case study با ویژوال subgraph
+
+**کجا اضافه شود:** یک **زیربخش جدید** در Experiments، مثلاً **«Case study: subgraph visualization»** (مثلاً 6.9.3 یا 7.X).
+
+### متن آماده:
+
+> **Case study: subgraph visualization.** To provide qualitative insight into PWLP’s behavior, we selected representative node pairs where PWLP shows clear improvement over baselines (e.g., on dataset X). Figure X illustrates the subgraphs constructed via pool walks for two such pairs: we show which nodes were selected (highlighted), the walk paths, and the resulting compact subgraph. In both cases, the pool walk concentrates on nodes that lie on multiple short paths between the target pair, which aligns with our influence definition. This compact, influence-focused subgraph appears to capture the relevant structure for link prediction while avoiding unnecessary nodes, explaining in part the gain over methods that use fixed-hop or enclosing subgraphs. Additional visualizations are provided in the Appendix (Figure A.X).
+
+**کار شما:** یک یا دو شکل (ویژوال subgraph برای ۱–۲ جفت نود) تهیه کنید و این زیربخش را با ارجاع به آن‌ها در Experiments اضافه کنید.
+
+---
+
+## Step 1.3 — Limitations در Conclusion
+
+**کجا اضافه شود:** **Conclusion**، یک پاراگراف با عنوان **«Limitations»** قبل از «Future work» یا پاراگراف پایانی.
+
+### متن آماده:
+
+> **Limitations.** Our work has several limitations. (1) **Scalability and memory:** On very large graphs (e.g., billions of edges), repeated pool walks and line-graph construction may still be costly; we have not evaluated PWLP at that scale. (2) **Hyperparameter sensitivity:** Performance depends on walk length \(L\), number of walks \(k\), and top-\(n\); we provide guidance via sensitivity analysis but optimal values may vary by domain. (3) **Node features:** When node features are missing or very noisy, the benefit of our fusion design may be reduced; we have not systematically varied feature quality. (4) **Computational cost:** PWLP is more expensive than simple heuristics (e.g., common neighbors); the trade-off is justified when accuracy is critical. We see addressing these as directions for future work.
+
+**کار شما:** این پاراگراف را در Conclusion قرار دهید و در صورت نیاز با یک جمله دربارهٔ «future work» تمام کنید.
+
+---
+
+## Step 1.4 — توضیح شهودی در ابتدای Methodology
+
+**کجا اضافه شود:** **ابتدای بخش Methodology** (قبل از هر تعریف رسمی و Lemma).
+
+### متن آماده:
+
+> **High-level idea.** Before formal definitions, we give an intuitive overview of PWLP. For each candidate link \((u,v)\), PWLP (1) performs multiple **pool walks** starting from \(u\) and \(v\) to dynamically select a small set of **influential** nodes (those frequently visited); (2) builds a **compact subgraph** induced by these nodes and the target edge; and (3) transforms this subgraph into a **line graph** to obtain edge-centric representations, then fuses them with node features (e.g., via PCA and an MLP) to predict the link. Thus, the core idea is to combine influence-based subgraph extraction with line-graph encoding and balanced fusion—yielding a scalable and accurate link prediction model.
+
+**کار شما:** این پاراگراف را به عنوان اولین یا دومین پاراگراف بخش Methodology قرار دهید.
+
+---
+
+# بخش سوم: داور ۳ (Reviewer #3)
+
+---
+
+## Step 3.1 — نوآوری در Introduction
+
+**کجا اضافه شود:** **Introduction**، در پاراگراف contributions یا بلافاصله بعد از آن.
+
+### متن آماده:
+
+> The **unique contribution** of this paper is threefold: (1) we introduce **pool-walk-based dynamic subgraph extraction** with visit-frequency influence scoring, which adapts the subgraph to local structure instead of using a fixed hop radius; (2) we combine this with **line-graph-based edge-centric encoding** and **balanced fusion** of structural and node features in a single framework; and (3) we show that this combination yields strong empirical performance and favorable scalability compared to prior subgraph-based and GNN-based link prediction methods. We clarify that PWLP integrates existing ideas (random walks, line graphs, GNNs) in a novel way rather than proposing a new theoretical principle; the value lies in the design choices and the resulting gains.
+
+**کار شما:** اگر پاراگراف مشابهی دارید، آن را با این متن ادغام یا جایگزین کنید تا «unique contribution» صریح شود.
+
+---
+
+## Step 3.2 — ادبیات اخیر در Related Work
+
+**کجا اضافه شود:** **Related Work**، یک پاراگراف در انتها یا قبل از «Conceptual comparison» (Step 2.1).
+
+### متن آماده:
+
+> **Recent landscape.** Subgraph-based and edge-centric link prediction has seen rapid development in the last 2–3 years. Recent work includes [cite 2–3 papers from 2023–2025 that you already use or add], which focus on [brief theme]. PWLP positions itself in this landscape by explicitly combining pool-walk extraction with line-graph encoding and by providing theoretical bounds (Lemmas 1–2) and extensive experiments on scalability and efficiency (Section X). This places our method among the scalable, structure-aware link prediction approaches that are suitable for large and heterogeneous networks.
+
+**کار شما:** ۲–۳ مرجع اخیر (۲۰۲۳–۲۰۲۵) را در [cite …] قرار دهید و در صورت تمایل به مراجع Step 2.6 اشاره کنید.
+
+---
+
+## Step 3.3 — مرجع Abdulrazaq (2023)
+
+**کجا اضافه شود:** **Related Work** یا **Evaluation**، جایی که از ارزیابی، کلاس نامتعادل یا rare positive links صحبت می‌کنید.
+
+### متن آماده:
+
+> In settings where positive links are rare (e.g., cold-start or very sparse networks), evaluation and optimization should account for class imbalance; relevant considerations from rare-event prediction and imbalanced learning are discussed by Abdulrazaq (2023). We use standard metrics (AUC, AUPR) that remain informative under imbalance; for highly imbalanced datasets we also report AUPR where appropriate.
+
+**مرجع برای References:**
+
+- Abdulrazaq, M. (2023). Rare-event prediction in imbalanced data: A unified evaluation and optimization framework for high-risk systems. *Communication in Physical Sciences*, 9(4). https://journalcps.com/index.php/volumes/article/view/740
+
+**کار شما:** این پاراگراف را در Related Work یا بخش Evaluation قرار دهید و منبع را به References اضافه کنید.
+
+---
+
+## Step 3.4 — فرضیات، برآورد و Robustness
+
+**کجا اضافه شود:** **Methodology** (انتها) یا **Experiments** (ابتدا)، یک زیربخش کوتاه **«Assumptions and reproducibility»** یا **«Training protocol and robustness»**.
+
+### متن آماده:
+
+> **Assumptions and training protocol.** We assume undirected [or directed, as in your setting] graphs and availability of node features unless stated otherwise; for missing features we use standard padding or learnable embeddings. Training is performed with [loss, e.g., cross-entropy], Adam optimizer, and early stopping on validation AUC/AUPR; see Table X for hyperparameters. **Robustness and sensitivity:** We report results over multiple random seeds (e.g., 5) and data splits where applicable. Sensitivity to key hyperparameters (walk length \(L\), number of walks \(k\), top-\(n\)) is documented in Section 6.9.2 and in the Appendix. This protocol ensures transparency and reproducibility.
+
+**کار شما:** این بند را در Methodology یا Experimental setup قرار دهید و به جدول هایپرپارامترها و Section 6.9.2 ارجاع دهید.
+
+---
+
+## Step 3.5 — Limitations (تقویت با bias و generalizability)
+
+**کجا اضافه شود:** همان پاراگراف **Limitations** در **Conclusion** (Step 1.3). فقط یک جملهٔ اضافه برای bias و generalizability.
+
+### متن آماده — جمله‌های اضافه برای پاراگراف Limitations:
+
+> Potential **sources of bias** include the selection of datasets (all from [domain/source]) and the choice of baselines; we have included major subgraph-based and GNN-based methods but cannot cover every variant. **Generalizability** to other domains (e.g., biological or temporal graphs) and to very large or dynamic graphs remains to be validated in future work.
+
+**کار شما:** این دو جمله را به انتهای پاراگراف Limitations (Step 1.3) اضافه کنید.
+
+---
+
+## Step 3.6 — خوانایی و توضیح جدول/شکل
+
+**کار شما (دستورالعمل ویرایش):**  
+- هر **جدول** و **شکل** را در متن با یک جملهٔ خلاصه معرفی کنید (مثلاً «Table X shows …» / «Figure X illustrates …»).  
+- تکرار همان استدلال در Introduction، Related Work و Discussion را حذف کنید و فقط در یک جا نگه دارید.  
+- جملات طولانی را کوتاه کنید تا جریان متن روان‌تر شود.
+
+متن آمادهٔ جداگانه لازم نیست؛ یک **pass** ویرایشی با توجه به موارد بالا کافی است.
+
+---
+
+# خلاصهٔ محل درج هر اصلاح
+
+| Step | محتوا | کجا در مقاله |
+|------|--------|---------------|
+| **R2.1** | نوآوری + مقایسه مفهومی LGLP/SEAL/NCN | Introduction (contributions) + Related Work (پاراگراف/زیربخش جدید) |
+| **R2.2** | Sensitivity L,k,n؛ influence vs PageRank/decay؛ توجیه PCA | Section 6.9.2؛ Methodology (influence + PCA) یا Experiments |
+| **R2.3** | قاب‌بندی Lemma 1, 2 و Corollary | Theory section، کنار هر Lemma/Corollary |
+| **R2.4** | Protocol tuning؛ OOM؛ جدول runtime و حافظه | Experimental setup + زیربخش Efficiency در Experiments |
+| **R2.5** | کوتاه‌سازی؛ Appendix؛ notation | کل متن + Appendix + جدول Notation (اختیاری) |
+| **R2.6** | مراجع Acharya, Zhang, Lee, Tang | Related Work + References |
+| **R1.1** | جدول هایپرپارامترها | Section 6.3 |
+| **R1.2** | Case study + ویژوال subgraph | زیربخش جدید در Experiments (مثلاً 6.9.3) |
+| **R1.3** | پاراگراف Limitations | Conclusion |
+| **R1.4** | پاراگراف شهودی High-level idea | ابتدای Methodology |
+| **R3.1** | پاراگراف Unique contribution | Introduction |
+| **R3.2** | پاراگراف Recent landscape | Related Work |
+| **R3.3** | مرجع Abdulrazaq + جمله imbalance | Related Work یا Evaluation + References |
+| **R3.4** | Assumptions و robustness | Methodology یا Experiments |
+| **R3.5** | جملات bias و generalizability | انتهای پاراگراف Limitations در Conclusion |
+| **R3.6** | خوانایی و جدول/شکل | ویرایش در سراسر متن |
+
+با انجام این گام‌ها و قرار دادن متن‌های آماده در محل‌های بالا، نسخهٔ اصلاح‌شدهٔ مقاله و پاسخ به داوران را می‌توانید کامل کنید.
